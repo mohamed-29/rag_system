@@ -1,0 +1,6 @@
+chroma_vmc_db/
+chroma_vmc_gemini_db/
+chroma_vmc_local_db/
+chroma_vmc_prod_db/
+static/
+

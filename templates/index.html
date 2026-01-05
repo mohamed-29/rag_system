@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iVend Intelligence Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --container-bg: #1e293b;
+            --accent-primary: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.5);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .chat-box {
+            background: rgba(30, 41, 59, 0.7);
+            border-radius: 16px;
+            padding: 30px;
+            min-height: 400px;
+            max-height: 600px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #0ea5e9, #4f46e5);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background: #334155;
+            color: #e2e8f0;
+            border-bottom-left-radius: 4px;
+            white-space: pre-wrap;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-area {
+            position: relative;
+            display: flex;
+            gap: 1rem;
+        }
+
+        input[type="text"] {
+            flex-grow: 1;
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: white;
+            padding: 1.2rem 1.5rem;
+            border-radius: 12px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            color: white;
+            border: none;
+            padding: 0 2.5rem;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Markdown Code Blocks */
+        pre {
+            background: #0f172a;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #334155;
+        }
+
+        code {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>iVend Intelligence</h1>
+            <div class="subtitle">Factory Analytics & Strategic Planning</div>
+        </div>
+
+        <div class="chat-box" id="chatBox">
+            <div class="message bot">
+                System Online. I am connected to the iVend Factory Data Stream.
+                <br><br>
+                Ask me about:
+                <br>- Production capacity vs. Targets
+                <br>- Revenue projections for 2026
+                <br>- Machine technical performance
+            </div>
+        </div>
+
+        <form class="input-area" id="queryForm">
+            <input type="text" id="userInput" placeholder="Ask about Q3 projections, machine deployment..."
+                autocomplete="off">
+            <button type="submit" id="sendBtn">Send</button>
+        </form>
+    </div>
+
+    <!-- Script remains largely same but updated visual classes -->
+    <script>
+        const form = document.getElementById('queryForm');
+        const chatBox = document.getElementById('chatBox');
+        const input = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const question = input.value.trim();
+            if (!question) return;
+
+            appendMessage(question, 'user');
+            input.value = '';
+            setLoading(true);
+
+            try {
+                // Determine API endpoint - this file seems to be a fallback or legacy
+                // Using /api/query as per original, or we could point to /chat if unified.
+                // Keeping /api/query for safety if this is a different backend.
+                const response = await fetch('/api/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question })
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    appendMessage(`Error: ${data.error}`, 'bot');
+                } else {
+                    appendMessage(data.answer, 'bot');
+                }
+            } catch (err) {
+                appendMessage(`Connection Error: ${err.message}`, 'bot');
+            } finally {
+                setLoading(false);
+            }
+        });
+
+        function appendMessage(text, sender) {
+            const div = document.createElement('div');
+            div.classList.add('message', sender);
+
+            if (text.includes("```")) {
+                const parts = text.split("```");
+                let html = "";
+                parts.forEach((part, index) => {
+                    if (index % 2 === 1) {
+                        html += `<pre><code>${part.trim()}</code></pre>`;
+                    } else {
+                        html += part.replace(/\n/g, "<br>");
+                    }
+                });
+                div.innerHTML = html;
+            } else {
+                div.innerText = text;
+            }
+
+            chatBox.appendChild(div);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function setLoading(isLoading) {
+            sendBtn.disabled = isLoading;
+            sendBtn.innerText = isLoading ? '...' : 'Send';
+            input.disabled = isLoading;
+            if (!isLoading) input.focus();
+        }
+    </script>
+</body>
+
+</html>
