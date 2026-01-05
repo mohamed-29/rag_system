@@ -9,6 +9,8 @@ import uuid
 import glob
 import requests
 from flask import Flask, request, jsonify, render_template, session, redirect, url_for
+from dotenv import load_dotenv
+load_dotenv()
 
 # Patch asyncio for Flask+EdgeTTS compatibility
 nest_asyncio.apply()
