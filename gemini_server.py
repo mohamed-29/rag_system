@@ -29,7 +29,7 @@ USERS = {
 API_KEY = os.getenv("GEMINI_API_KEY", "") 
 
 # Point to a FOLDER containing all knowledge images
-KNOWLEDGE_FOLDER = r"C:\Users\moham\Desktop\Ivend\rag_system\knowledge_base"
+KNOWLEDGE_FOLDER = "knowledge_base"
 
 # Allowed image extensions
 IMAGE_EXTENSIONS = ['*.png', '*.jpg', '*.jpeg', '*.webp']
